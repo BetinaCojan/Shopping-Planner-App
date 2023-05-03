@@ -8,10 +8,10 @@ import com.example.myapplication.data.db.entities.ShoppingItem
 interface ShoppingDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun upsert(item: ShoppingItem)
+    suspend fun upsert(item: ShoppingItem): Long
 
     @Delete
-    suspend fun delete(item: ShoppingItem)
+    suspend fun delete(item: ShoppingItem): Int
 
     @Query("SELECT * FROM shopping_items")
     fun getAllShoppingItems(): LiveData<List<ShoppingItem>>

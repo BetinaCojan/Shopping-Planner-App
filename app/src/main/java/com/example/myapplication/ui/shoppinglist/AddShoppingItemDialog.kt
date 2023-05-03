@@ -3,6 +3,7 @@ package com.example.myapplication.ui.shoppinglist
 import android.content.Context
 import android.os.Bundle
 import android.view.Window
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDialog
 import com.example.myapplication.R
@@ -11,15 +12,20 @@ import com.example.myapplication.data.db.entities.ShoppingItem
 class AddShoppingItemDialog(context: Context, var addDialogListener: AddDialogListener) :
     AppCompatDialog(context) {
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE)
         setContentView(R.layout.dialog_add_shopping_item)
 
-        tvAdd.setOnClickListener {
-            val name = etName.text.toString()
-            val amount = etAmount.text.toString().toInt()
-            if(name.isNullOrEmpty()) {
+        val etName = findViewById<TextView>(R.id.etName)
+        val etAmount = findViewById<TextView>(R.id.etAmount)
+        val tvCancel = findViewById<TextView>(R.id.tvCancel)
+
+        findViewById<TextView>(R.id.tvAdd)?.setOnClickListener {
+            val name = etName?.text.toString()
+            val amount = etAmount?.text.toString().toInt()
+            if (name.isNullOrEmpty()) {
                 Toast.makeText(context, "Please enter a name", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
@@ -29,7 +35,7 @@ class AddShoppingItemDialog(context: Context, var addDialogListener: AddDialogLi
             dismiss()
         }
 
-        tvCancel.setOnClickListener {
+        tvCancel?.setOnClickListener {
             cancel()
         }
     }
