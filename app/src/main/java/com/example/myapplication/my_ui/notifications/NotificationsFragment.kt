@@ -17,6 +17,7 @@ import com.example.myapplication.databinding.FragmentNotificationsBinding
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.*
 
 
@@ -110,6 +111,7 @@ class NotificationsFragment : Fragment() {
             .show()
     }
 
+    @SuppressLint("MissingPermission")
     private fun showNotification(message: String) {
         val notification = NotificationCompat.Builder(requireContext(), CHANNEL_ID)
             .setSmallIcon(R.drawable.icon_notifications)
@@ -117,20 +119,7 @@ class NotificationsFragment : Fragment() {
             .setContentText(message)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .build()
-        if (ActivityCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.POST_NOTIFICATIONS
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return
-        }
+
         notificationManager.notify(NOTIFICATION_ID, notification)
     }
 
