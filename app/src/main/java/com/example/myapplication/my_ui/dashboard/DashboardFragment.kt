@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.fragment.app.Fragment
+import com.example.myapplication.GroceryActivity
 import com.example.myapplication.R
 import com.example.myapplication.my_ui.organize_lists.ItemsOfList
 import com.example.myapplication.ui.ShoppingActivity
@@ -27,7 +28,7 @@ class DashboardFragment : Fragment() {
             super.onViewCreated(view, savedInstanceState)
             val go_to_activity_item: Button = view.findViewById(R.id.btn_add)
             go_to_activity_item.setOnClickListener {
-                val intent = Intent(requireContext(), ShoppingActivity::class.java)
+                val intent = Intent(requireContext(), GroceryActivity::class.java)
                 startActivity(intent)
             }
         }

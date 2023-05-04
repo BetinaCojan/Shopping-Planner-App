@@ -4,8 +4,8 @@ plugins {
     id 'com.google.gms.google-services'
     //id 'kotlin-android-extensions'
     id 'kotlin-parcelize'
+    id 'kotlin-kapt'
 }
-apply plugin: "kotlin-kapt"
 
 android {
     namespace 'com.example.myapplication'
@@ -36,6 +36,9 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+    }
+    packagingOptions{
+        exclude 'META-INF/atomicfu.kotlin_module'
     }
     kotlinOptions {
         jvmTarget = '1.8'
@@ -83,7 +86,6 @@ dependencies {
     // Room and Architectural Components
     implementation "androidx.legacy:legacy-support-v4:1.0.0"
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1'
 
     // New Material Design
     implementation "com.google.android.material:material:1.8.0"
@@ -105,5 +107,14 @@ dependencies {
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
     implementation 'androidx.room:room-runtime:2.5.1'
+
+    //Last
+    implementation "androidx.lifecycle:lifecycle-common-java8:$rootProject.lifecycleVersion"
+    //androidTestImplementation "androidx.room:room-testing:$rootProject.roomVersion"
+    //implementation "org.jetbrains.kotlin:kotlin-stdlib:1.4.32"
+    androidTestImplementation "androidx.arch.core:core-testing:$rootProject.coreTestingVersion"
+    androidTestImplementation ("androidx.test.espresso:espresso-core:$rootProject.espressoVersion", {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
 
 }
