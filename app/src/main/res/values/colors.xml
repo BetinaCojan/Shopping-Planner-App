@@ -16,6 +16,8 @@
     <color name="darkergrey2">#333232</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
-    <color name="roz_deschis">#FFCDD2</color>
+    <color name="pink_milky">#FFCDD2</color>
+    <color name="purple_milky">#be91ff</color>
+    <color name="blue_coral">#7ED9E7</color>
 
 </resources>

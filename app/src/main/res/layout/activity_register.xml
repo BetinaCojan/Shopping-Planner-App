@@ -4,44 +4,61 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#F9F9F9"
     tools:context=".my_ui.authentication.Register">
 
     <TextView
         android:id="@+id/register_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentStart="false"
         android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="false"
         android:layout_centerHorizontal="true"
+        android:layout_centerVertical="false"
         android:layout_marginTop="50dp"
         android:text="REGISTER"
-        android:textSize="24sp" />
+        android:textColor="@color/darkergrey2"
+        android:textSize="24sp"
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentRight="false" />
 
 
     <EditText
         android:id="@+id/editText_email_login"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_below="@+id/register_text"
         android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
         android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
         android:layout_marginStart="20dp"
         android:layout_marginTop="200dp"
         android:layout_marginEnd="20dp"
         android:hint="Email"
         android:inputType="textEmailAddress"
-        android:textSize="20sp" />
+        android:backgroundTint="@color/darkergrey2"
+        android:textColor="@color/darkergrey2"
+        android:textColorHint="@color/darkergrey2"
+        android:textSize="24sp" />
 
     <EditText
         android:id="@+id/editText_password_login"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_below="@+id/editText_email_login"
         android:layout_alignStart="@+id/editText_email_login"
         android:layout_alignEnd="@+id/editText_email_login"
         android:layout_marginTop="10dp"
+        android:textColor="@color/darkergrey2"
+        android:textColorHint="@color/darkergrey2"
+        android:backgroundTint="@color/darkergrey2"
         android:hint="Password"
         android:inputType="textPassword"
-        android:textSize="20sp" />
+        android:textSize="24sp"
+        android:layout_alignLeft="@+id/editText_email_login"
+        android:layout_alignRight="@+id/editText_email_login" />
 
     <Button
         android:id="@+id/register_button"
@@ -50,9 +67,12 @@
         android:layout_below="@+id/editText_password_login"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginStart="100dp"
-        android:layout_marginTop="50dp"
-        android:layout_marginEnd="100dp"
-        android:text="Register" />
+        android:layout_marginStart="120dp"
+        android:layout_marginTop="100dp"
+        android:layout_marginEnd="120dp"
+        android:textColor="@color/white"
+        android:text="Register"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true" />
 
 </RelativeLayout>
