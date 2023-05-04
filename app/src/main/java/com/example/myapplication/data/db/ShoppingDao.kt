@@ -3,6 +3,8 @@ package com.example.myapplication.data.db
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.example.myapplication.data.db.entities.ShoppingItem
+import androidx.room.Dao
+import androidx.room.Query
 
 @Dao
 interface ShoppingDao {
