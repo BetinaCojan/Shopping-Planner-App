@@ -9,9 +9,6 @@ import android.widget.Button
 import androidx.fragment.app.Fragment
 import com.example.myapplication.GroceryActivity
 import com.example.myapplication.R
-import com.example.myapplication.my_ui.organize_lists.ItemsOfList
-import com.example.myapplication.ui.ShoppingActivity
-
 
 class DashboardFragment : Fragment() {
 
