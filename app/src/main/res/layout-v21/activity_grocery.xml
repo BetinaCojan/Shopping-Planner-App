@@ -42,6 +42,7 @@
         android:layout_marginEnd="14dp"
         android:layout_marginRight="14dp"
         android:background="@drawable/search_background"
+        android:backgroundTint="@color/darkergrey2"
         android:text="Search"
         android:textColor="@color/white" />
 
@@ -79,8 +80,6 @@
         android:backgroundTint="@color/purple_200"
         android:contentDescription="Adauga element"
         android:src="@drawable/ic_add"
-        app:tint="@color/black"
-        tools:targetApi="lollipop"
-        tools:ignore="HardcodedText" />
+        app:tint="@color/black" />
 
 </RelativeLayout>

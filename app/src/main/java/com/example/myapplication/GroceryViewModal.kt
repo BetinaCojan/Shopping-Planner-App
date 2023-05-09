@@ -1,5 +1,7 @@
 package com.example.myapplication
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -14,6 +16,12 @@ class GroceryViewModal(private val repository: GroceryRepository) : ViewModel() 
         repository.delete(items)
     }
 
-    fun getAllGroceryItems() = repository.gelAllItems()
+    fun getAllItems(): LiveData<List<GroceryItems>> {
+        return repository.getAllItems()
+    }
+
+    fun searchGroceryItems(query: String): MediatorLiveData<List<GroceryItems>?> {
+        return repository.searchGroceryItems(query)
+    }
 
 }

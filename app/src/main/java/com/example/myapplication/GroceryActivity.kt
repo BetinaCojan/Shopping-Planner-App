@@ -18,20 +18,52 @@ class GroceryActivity : AppCompatActivity() , GroceryRVAdapter.GroceryItemClickI
     lateinit var list: List<GroceryItems>
     lateinit var groceryRVAdapter: GroceryRVAdapter
     lateinit var groceryViewModal: GroceryViewModal
+    private lateinit var searchEditText: EditText
+    private lateinit var searchButton: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_grocery)
+
+        // Găsește elementele de căutare din XML
+        searchEditText = findViewById(R.id.searchEditText)
+        searchButton = findViewById(R.id.searchButton)
+
+        // Setează un listener pentru butonul de căutare
+        searchButton.setOnClickListener {
+            // Get text din EditText pentru căutare
+            val query = searchEditText.text.toString()
+
+            // Get text din EditText pentru cautare
+            val itemName = searchEditText.text.toString()
+
+            // Cauta item-ul cu numele dat de utilizator
+            groceryViewModal.searchGroceryItems(itemName).observe(this, Observer {
+                if (it != null) {
+                    groceryRVAdapter.list = it
+                }
+                groceryRVAdapter.notifyDataSetChanged()
+
+                if (it != null) {
+                    if (it.isEmpty()) {
+                        Toast.makeText(this, "No results found", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            })
+        }
+
         itemsRV = findViewById(R.id.idRVItems)
         addFAB = findViewById(R.id.idFABAdd)
         list = ArrayList<GroceryItems>()
         groceryRVAdapter = GroceryRVAdapter(list,this)
         itemsRV.layoutManager = LinearLayoutManager(this)
         itemsRV.adapter = groceryRVAdapter
+
         val groceryRepository = GroceryRepository(GroceryDatabase(this))
         val factory = GroceryViewModalFactory(groceryRepository)
+
         groceryViewModal = ViewModelProvider(this,factory).get(GroceryViewModal::class.java)
-        groceryViewModal.getAllGroceryItems().observe(this, Observer {
+        groceryViewModal.getAllItems().observe(this, Observer {
             groceryRVAdapter.list = it
             groceryRVAdapter.notifyDataSetChanged()
         })
@@ -70,12 +102,10 @@ class GroceryActivity : AppCompatActivity() , GroceryRVAdapter.GroceryItemClickI
 
                 Toast.makeText(applicationContext, "Please Enter All The Data...", Toast.LENGTH_SHORT).show()
             }
-
         }
-
         dialog.show()
-
     }
+
     override fun onItemClick(groceryItems: GroceryItems) {
         groceryViewModal.delete(groceryItems)
         groceryRVAdapter.notifyDataSetChanged()
