@@ -42,11 +42,12 @@
         android:layout_height="50dp"
         android:layout_centerInParent="true"
         android:background="@drawable/button_background"
-        android:text="Trimite notificare"
+        android:text="Send Notification"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_notifications" />
+        app:layout_constraintTop_toBottomOf="@+id/text_notifications"
+        tools:ignore="HardcodedText" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

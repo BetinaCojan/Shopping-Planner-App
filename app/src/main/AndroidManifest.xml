@@ -21,12 +21,6 @@
             android:name=".GroceryActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.ShoppingActivity"
-            android:exported="false" />
-        <activity
-            android:name=".my_ui.organize_lists.ItemsOfList"
-            android:exported="false" />
-        <activity
             android:name=".my_ui.authentication.Login"
             android:exported="false" />
         <activity
