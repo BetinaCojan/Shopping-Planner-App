@@ -136,10 +136,8 @@ class NotificationsFragment : Fragment() {
         private const val LOCATION_PERMISSION_REQUEST_CODE = 123
     }
 
-    // Broadcast Receiver va afisa mesajul corespunzator de enable/disable GPS doar in fragmentul Notifications
     override fun onResume() {
         super.onResume()
-        //activity?.registerReceiver(gpsBroadcastReceiver, IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION))
         GpsBroadcastReceiver.setListener(requireContext(), object : GpsBroadcastReceiver.GpsStatusListener {
             override fun onGpsStatusChanged(gpsEnabled: Boolean) {
                 val message = if (gpsEnabled) "GPS is enabled" else "GPS is disabled"
@@ -148,8 +146,9 @@ class NotificationsFragment : Fragment() {
         })
     }
 
-    override fun onPause() {
-        super.onPause()
-        activity?.unregisterReceiver(gpsBroadcastReceiver)
+    override fun onDestroy() {
+        super.onDestroy()
+        GpsBroadcastReceiver.removeListener(requireContext())
     }
+
 }

@@ -6,8 +6,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.location.LocationManager
 
-// Broadcast Receiver va afisa mesajul corespunzator de enable/disable GPS doar in fragmentul Notifications
-
 class GpsBroadcastReceiver : BroadcastReceiver() {
     interface GpsStatusListener {
         fun onGpsStatusChanged(gpsEnabled: Boolean)
@@ -28,6 +26,7 @@ class GpsBroadcastReceiver : BroadcastReceiver() {
 
     companion object {
         private var listener: GpsStatusListener? = null
+        private var receiver: GpsBroadcastReceiver? = null
 
         fun setListener(context: Context, listener: GpsStatusListener) {
             this.listener = listener
@@ -44,14 +43,21 @@ class GpsBroadcastReceiver : BroadcastReceiver() {
         }
 
         private fun registerReceiver(context: Context) {
-            val receiver = GpsBroadcastReceiver()
+            receiver?.let {
+                // Receiver-ul este deja înregistrat
+                return
+            }
+            receiver = GpsBroadcastReceiver()
             val filter = IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION)
             context.registerReceiver(receiver, filter)
         }
 
         private fun unregisterReceiver(context: Context) {
-            val receiver = GpsBroadcastReceiver()
-            context.unregisterReceiver(receiver)
+            receiver?.let {
+                context.unregisterReceiver(it)
+                receiver = null
+            }
         }
     }
 }
+
