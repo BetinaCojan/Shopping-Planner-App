@@ -19,8 +19,13 @@ import com.google.android.gms.location.LocationServices
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.*
+import android.content.IntentFilter
+import android.location.LocationManager
+import android.widget.Toast
+import com.example.myapplication.broadcastreceiver.GpsBroadcastReceiver
 
 
+@Suppress("DEPRECATION")
 class NotificationsFragment : Fragment() {
 
     private val viewModel: NotificationsViewModel by viewModels()
@@ -31,6 +36,8 @@ class NotificationsFragment : Fragment() {
 
     private lateinit var notificationManager: NotificationManagerCompat
     private lateinit var button_send_notification: Button
+
+    private val gpsBroadcastReceiver = GpsBroadcastReceiver()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -127,5 +134,22 @@ class NotificationsFragment : Fragment() {
         private const val CHANNEL_ID = "location_notification_channel"
         private const val NOTIFICATION_ID = 0
         private const val LOCATION_PERMISSION_REQUEST_CODE = 123
+    }
+
+    // Broadcast Receiver va afisa mesajul corespunzator de enable/disable GPS doar in fragmentul Notifications
+    override fun onResume() {
+        super.onResume()
+        //activity?.registerReceiver(gpsBroadcastReceiver, IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION))
+        GpsBroadcastReceiver.setListener(requireContext(), object : GpsBroadcastReceiver.GpsStatusListener {
+            override fun onGpsStatusChanged(gpsEnabled: Boolean) {
+                val message = if (gpsEnabled) "GPS is enabled" else "GPS is disabled"
+                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
+    override fun onPause() {
+        super.onPause()
+        activity?.unregisterReceiver(gpsBroadcastReceiver)
     }
 }
