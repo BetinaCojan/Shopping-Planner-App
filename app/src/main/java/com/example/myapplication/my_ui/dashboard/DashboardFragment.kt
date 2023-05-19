@@ -24,6 +24,10 @@ class DashboardFragment : Fragment() {
             // Inflate the layout for this fragment
             return inflater.inflate(R.layout.fragment_dashboard, container, false)
         }
+    private fun incrementCount() {
+        val currentCount = getCount()
+        sharedPref.edit().putInt(countKey, currentCount + 1).apply()
+    }
 
         override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
             super.onViewCreated(view, savedInstanceState)

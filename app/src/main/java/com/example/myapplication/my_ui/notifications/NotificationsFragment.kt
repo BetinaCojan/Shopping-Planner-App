@@ -1,11 +1,20 @@
 package com.example.myapplication.my_ui.notifications
 
+import android.Manifest
+import android.annotation.SuppressLint
+import android.app.AlertDialog
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
+import android.content.DialogInterface
 import android.content.pm.PackageManager
+import android.location.Location
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -16,28 +25,29 @@ import com.example.myapplication.R
 import com.example.myapplication.databinding.FragmentNotificationsBinding
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import android.Manifest
-import android.annotation.SuppressLint
-import android.app.*
-import android.content.IntentFilter
-import android.location.LocationManager
-import android.widget.Toast
-import com.example.myapplication.broadcastreceiver.GpsBroadcastReceiver
 
-
-@Suppress("DEPRECATION")
 class NotificationsFragment : Fragment() {
 
     private val viewModel: NotificationsViewModel by viewModels()
-
     private lateinit var binding: FragmentNotificationsBinding
-
     private lateinit var locationProvider: FusedLocationProviderClient
-
     private lateinit var notificationManager: NotificationManagerCompat
-    private lateinit var button_send_notification: Button
 
-    private val gpsBroadcastReceiver = GpsBroadcastReceiver()
+    companion object {
+        private const val CHANNEL_ID = "location_notification_channel"
+        private const val NOTIFICATION_ID = 0
+        private const val LOCATION_PERMISSION_REQUEST_CODE = 123
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        locationProvider = LocationServices.getFusedLocationProviderClient(requireContext())
+        notificationManager = NotificationManagerCompat.from(requireContext())
+
+        createNotificationChannel()
+        sendNotification("You are in the target area!")
+
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -45,31 +55,44 @@ class NotificationsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentNotificationsBinding.inflate(inflater, container, false)
-
-        locationProvider = LocationServices.getFusedLocationProviderClient(requireContext())
-        notificationManager = NotificationManagerCompat.from(requireContext())
-
-        button_send_notification = binding.buttonSendNotification
-
-        button_send_notification.setOnClickListener {
-            requestLocationPermission()
-        }
-
         return binding.root
     }
 
+
+
+    private fun createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val name = "Location Notifications"
+            val descriptionText = "Shows notifications based on location"
+            val importance = NotificationManager.IMPORTANCE_DEFAULT
+            val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
+                description = descriptionText
+            }
+
+            val notificationManager =
+                requireContext().getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+        }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding.buttonSendNotification.setOnClickListener {
+            requestLocationPermission()
+        }
+    }
+
     private fun requestLocationPermission() {
-        when {
-            ContextCompat.checkSelfPermission(
+        if (ContextCompat.checkSelfPermission(
                 requireContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED -> {
-                getLocation()
-            }
-            shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION) -> {
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            getLocation()
+        } else {
+            if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)) {
                 showLocationPermissionDeniedDialog()
-            }
-            else -> {
+            } else {
                 requestPermissions(
                     arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
                     LOCATION_PERMISSION_REQUEST_CODE
@@ -82,44 +105,37 @@ class NotificationsFragment : Fragment() {
         if (ActivityCompat.checkSelfPermission(
                 requireContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_COARSE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
             return
         }
-        locationProvider.lastLocation.addOnSuccessListener { location ->
+
+        locationProvider.lastLocation.addOnSuccessListener { location: Location? ->
             if (location != null) {
                 if (viewModel.isInTargetArea(location.latitude, location.longitude)) {
-                    showNotification("You are in the target area!")
+                    sendNotification("You are in the target area!")
                 } else {
-                    showNotification("You are not in the target area.")
+                    sendNotification("You are not in the target area.")
                 }
             } else {
-                showNotification("Could not get location.")
+                sendNotification("Could not get location.")
             }
         }.addOnFailureListener { e ->
-            showNotification("Error getting location: ${e.message}")
+            sendNotification("Error getting location: ${e.message}")
         }
     }
 
     private fun showLocationPermissionDeniedDialog() {
         AlertDialog.Builder(requireContext())
             .setMessage("Location permission denied.")
-            .setPositiveButton("OK", null)
+            .setPositiveButton("OK") { dialogInterface: DialogInterface, _: Int ->
+                dialogInterface.dismiss()
+            }
             .show()
     }
 
     @SuppressLint("MissingPermission")
-    private fun showNotification(message: String) {
+    private fun sendNotification(message: String) {
         val notification = NotificationCompat.Builder(requireContext(), CHANNEL_ID)
             .setSmallIcon(R.drawable.icon_notifications)
             .setContentTitle("Location Notification")
@@ -129,26 +145,4 @@ class NotificationsFragment : Fragment() {
 
         notificationManager.notify(NOTIFICATION_ID, notification)
     }
-
-    companion object {
-        private const val CHANNEL_ID = "location_notification_channel"
-        private const val NOTIFICATION_ID = 0
-        private const val LOCATION_PERMISSION_REQUEST_CODE = 123
-    }
-
-    override fun onResume() {
-        super.onResume()
-        GpsBroadcastReceiver.setListener(requireContext(), object : GpsBroadcastReceiver.GpsStatusListener {
-            override fun onGpsStatusChanged(gpsEnabled: Boolean) {
-                val message = if (gpsEnabled) "GPS is enabled" else "GPS is disabled"
-                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
-            }
-        })
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        GpsBroadcastReceiver.removeListener(requireContext())
-    }
-
 }
