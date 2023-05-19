@@ -1,6 +1,8 @@
 package com.example.myapplication.my_ui.dashboard
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +13,8 @@ import com.example.myapplication.GroceryActivity
 import com.example.myapplication.R
 
 class DashboardFragment : Fragment() {
+    private lateinit var sharedPref: SharedPreferences
+    private val countKey = "count_key"
 
         override fun onCreateView(
             inflater: LayoutInflater,
@@ -28,6 +32,25 @@ class DashboardFragment : Fragment() {
                 val intent = Intent(requireContext(), GroceryActivity::class.java)
                 startActivity(intent)
             }
-        }
 
+            sharedPref = requireActivity().getSharedPreferences("myPref", Context.MODE_PRIVATE)
+
+            // serializare locala a datelor
+            sharedPref.edit().putInt(countKey, 0).apply()
+
+//            val sharedPreferences = requireActivity().getSharedPreferences("sharedPrefs", 0)
+//            val button = view.findViewById<Button>(R.id.btn_add)
+//            button.setOnClickListener {
+//                incrementCount()
+//            }
+
+        }
+    private fun incrementCount() {
+        val currentCount = getCount()
+        sharedPref.edit().putInt(countKey, currentCount + 1).apply()
+    }
+
+    private fun getCount(): Int {
+        return sharedPref.getInt(countKey, 0)
+    }
 }
